@@ -5,11 +5,13 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Validator;
+use App\Models\Category;
 
 class CategoryController extends Controller
 {
     public function index(){
-
+      $category = Category::latest()->paginate(10);
+      return view('admin.category.list');
     }
     public function create(){
       return view('admin.category.create');
@@ -23,6 +25,17 @@ class CategoryController extends Controller
     ]);
 
     if ($validator->passes()){
+      $category = new Category();
+      $category->name = $request->name;
+      $category->slug = $request->slug;
+      $category->status = $request->status;
+      $category->save();
+      $request ->session()->flash('success','Category added successfully');
+      return response()->json([
+        'status' =>true,
+        'message' => 'Category added successfully'
+        
+      ]);
 
     }else{
       return response()->json([
