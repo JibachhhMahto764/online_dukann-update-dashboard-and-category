@@ -1,10 +1,10 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
-
+use Illuminate\Support\Facades\File;
 use App\Http\Controllers\Controller;
 use App\Models\TempImage;
-use File;
+
 use Illuminate\Http\Request;
 use Validator;
 use App\Models\Category;
@@ -52,7 +52,10 @@ class CategoryController extends Controller
         $dPath = public_path().'/uploads/category/thumb/'.$newImageName;
         $img = Image::make($sPath);
          // resize image to fixed size
-           $img->resize(450, 600);
+          // $img->resize(450, 600);
+          $img ->fit(450,600,function($constraint){
+            $constraint->upsize();
+          });
                $img->save($dPath);
         $category->image = $newImageName;
         $category->save();
@@ -72,18 +75,110 @@ class CategoryController extends Controller
     }
       
     }
-    public function edit(){
+    public function edit($categoryId,Request $request){
+      
+      $category = Category::find($categoryId);
+        
+        if(empty($category)){
+          return redirect()->route('categories.index');
+        }
+        return view('admin.category.edit',compact('category'));
+    }
+
+    public function update($categoryId, Request $request){
+       
+
+       
+      $category = Category::find($categoryId);
+        
+        if(empty($category)){
+          $request ->session()->flash('error','Category Not Found');
+          return response()->json([
+            'status' => false,
+            'notFound' => true,
+            'message' => 'Category not Found'
+          ]);
+        }
+
+      $validator = Validator::make($request->all(),[
+        'name' => 'required',
+        'slug' => 'required|unique:categories,slug,'.$category->id.',id',
+  
+      ]);
+  
+      if ($validator->passes()){
+       
+        $category->name = $request->name;
+        $category->slug = $request->slug;
+        $category->status = $request->status;
+        $category->save();
+        $oldImage = $category->image;
+        // save images Here 
+        if (!empty($request->image_id)){
+          $tempImage = TempImage::find($request->image_id);
+          $extArray = explode('.',$tempImage->name);
+          $ext = last($extArray);
+          $newImageName = $category->id.'-'.time().'.'.$ext;
+          $sPath = public_path().'/temp/'.$tempImage->name;
+          $dPath = public_path().'/uploads/category/'.$newImageName;
+          File::copy($sPath,$dPath);
+  
+          // generate image thumbnail
+          $dPath = public_path().'/uploads/category/thumb/'.$newImageName;
+          $img = Image::make($sPath);
+           // resize image to fixed size
+            // $img->resize(450, 600);
+            $img ->fit(450,600,function($constraint){
+              $constraint->upsize();
+            });
+          $img->save($dPath);
+          $category->image = $newImageName;
+          $category->save();
+          // Delete old Image Here 
+          File::delete(public_path().'/uploads/category/'.$oldImage);
+          File::delete(public_path().'/uploads/category/thumb/'.$oldImage);
+        }
+        $request ->session()->flash('success','Category updated successfully');
+        return response()->json([
+          'status' =>true,
+          'message' => 'Category updated successfully'
+          
+        ]);
+  
+      }else{
+        return response()->json([
+          'status' =>false,
+          'errors' => $validator->errors()
+        ]);
+      }
 
     }
 
-    public function update(){
-
-    }
-
-    public function destroy(){
-
-    }
-
+    public function destroy($categoryId, Request $request) {
+      $category = Category::find($categoryId);
+  
+      if (empty($category)) {
+          $request->session()->flash('error', 'Category Not Found');
+          return response()->json([
+              'status' => false,  // Change status to false to reflect failure
+              'notFound' => true,  // Add a flag for not found cases
+              'message' => "Category Not Found"
+          ]);
+      }
+  
+      // Delete category files
+      File::delete(public_path() . '/uploads/category/thumb/' . $category->image);
+      File::delete(public_path() . '/uploads/category/' . $category->image);
+  
+      // Delete category
+      $category->delete();
+  
+      $request->session()->flash('success', 'Category Deleted successfully');
+      return response()->json([
+          'status' => true,
+          'message' => "Category Deleted successfully"
+      ]);
+  }
 
 
 

@@ -12,7 +12,7 @@
 		<link rel="stylesheet" href="{{asset('admin-assets/css/adminlte.min.css')}}">
 		<link rel="stylesheet" href="{{asset('admin-assets/css/custom.css')}}">
 		<link rel="stylesheet" href="{{asset('admin-assets/plugins/dropzone/min/dropzone.min.css')}}">
-		<meta name="csrf_token"content="{{csrf_token()}}">
+		<meta name="csrf-token"content="{{csrf_token()}}">
 	</head>
 	<body class="hold-transition sidebar-mini">
 		<!-- Site wrapper -->
@@ -95,7 +95,7 @@
 		<script type="text/javascript">
 		 $.ajaxSetup({
 			headers: {
-				'X-CSRF-TOKEN': $('meta[name="csrf_token"]').attr('content')
+				'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
 			}
 		    });
           </script>
