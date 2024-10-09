@@ -131,6 +131,8 @@
          }
       });
    });
+
+   
    $("#name").change(function(){
     let element = $(this);
 	$("button[type = submit]").prop('disabled',true);
