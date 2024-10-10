@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminLoginController;
+use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\SubCategoryController;
@@ -58,6 +59,9 @@ Route::group(['prefix' => 'admin'],function(){
     Route::get('/sub-categories/{subCategory}/edit',[SubCategoryController::class,'edit'])->name('sub-categories.edit');
     Route::put('/sub-categories/{subCategory}',[SubCategoryController::class,'update'])->name('sub-categories.update');
     Route::delete('/sub-categories/{subCategory}',[SubCategoryController::class,'destroy'])->name('sub-categories.delete');
+    // Brands route 
+    Route::get('/brands/create',[BrandController::class,'create'])->name('brands.create');
+    Route::post('/brands',[BrandController::class,'store'])->name('brands.store');
 
 
 
