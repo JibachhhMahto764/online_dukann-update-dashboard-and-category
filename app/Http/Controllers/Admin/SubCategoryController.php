@@ -83,7 +83,6 @@ class SubCategoryController extends Controller
                 'status' => false,
                 'notFound' => true
             ]);
-            //return redirect()->route('sub-categories.index');
         }
 
         $validator = Validator::make($request->all(),[
