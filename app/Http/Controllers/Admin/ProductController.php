@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\ProductImage;
 use Illuminate\Http\Request;
 use Validator;
 
@@ -52,6 +53,21 @@ class ProductController extends Controller
             $product->brand_id = $request->brand;
             $product->is_featured = $request->is_featured;
             $product->save();
+
+            //save gallary pics
+            if(!empty($request->image_array)){
+                foreach ($request->image_array as $temp_image_id){
+                  $productImage = new ProductImage();
+                  $productImage->product_id = $product->id;
+                  $productImage->image = 'NULL';
+                  $productImage->save();
+
+
+
+                
+
+                }
+            }
 
             // response display
             $request->session()->flash('success', 'Product added Successfully');
