@@ -55,7 +55,7 @@ class ProductController extends Controller
             $product->is_featured = $request->is_featured;
             $product->save();
 
-            //save gallary pics
+            //save gallary pic
             if(!empty($request->image_array)){
 
                 foreach ($request->image_array as $temp_image_id){
@@ -67,7 +67,7 @@ class ProductController extends Controller
                 
                   $productImage = new ProductImage();
                   $productImage->product_id = $product->id;
-                  $productImage->image = 'NULL';
+                  $productImage->image = 'Null';
                   $productImage->save();
 
                 $imageName = $product->id.'-'.$productImage->id.'-'.time().'.'.$ext;
@@ -95,7 +95,7 @@ class ProductController extends Controller
 
                 }
             }
-
+     
             // response display
             $request->session()->flash('success', 'Product added Successfully');
             return response()->json([
