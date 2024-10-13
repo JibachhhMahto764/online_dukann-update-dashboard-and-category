@@ -231,8 +231,8 @@
             var formArray = $(this).serializeArray();
             $("button[type = submit]").prop('disabled',true);
             $.ajax({
-                            url: "{{route('products.store')}}",  
-                            type: 'post',
+                            url: "{{route('products.update',$product->id)}}",  
+                            type: 'put',
                             data: formArray,
                             dataType: 'json',
                             success: function(response){

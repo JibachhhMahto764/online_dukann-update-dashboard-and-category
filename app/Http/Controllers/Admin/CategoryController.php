@@ -87,8 +87,6 @@ class CategoryController extends Controller
 
     public function update($categoryId, Request $request){
        
-
-       
       $category = Category::find($categoryId);
         
         if(empty($category)){
