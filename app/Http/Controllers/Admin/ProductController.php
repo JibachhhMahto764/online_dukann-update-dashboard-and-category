@@ -7,12 +7,24 @@ use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductImage;
+use App\Models\SubCategory;
 use App\Models\TempImage;
 use Illuminate\Http\Request;
 use Validator;
 use Intervention\Image\Facades\Image;
 class ProductController extends Controller
 {
+      public function index(Request $request){
+      $products = Product::latest('id')->with('product_images');
+      
+
+      if($request->get('keyword') != ""){
+        $products = $products->where('title','like','%'.$request->get('keyword').'%');
+      }
+     $products =  $products->paginate();
+      $data['products'] = $products;
+      return view('admin.products.list',$data);
+      }
     public function create(){
         $data = [];
         $categories = Category::orderBy('name','ASC')->get();
@@ -78,7 +90,7 @@ class ProductController extends Controller
 
                 // large image 
                   $sourcePath = public_path().'/temp/'.$tempImageInfo->name;
-                  $destPath = public_path().'uploads/product/large/'.$tempImageInfo->name;
+                  $destPath = public_path().'/uploads/product/large/'.$imageName;
                   $image = Image::make($sourcePath);
                   $image->resize(1400,null,function($constraint){
                     $constraint->aspectRatio();
@@ -88,7 +100,7 @@ class ProductController extends Controller
 
                 // small image
                
-                  $destPath = public_path().'uploads/product/small/'.$tempImageInfo->name;
+                  $destPath = public_path().'/uploads/product/small/'.$imageName;
                   $image = Image::make($sourcePath);
                   $image->fit(300,300);
                   $image->save($destPath);
@@ -109,5 +121,18 @@ class ProductController extends Controller
                 'errors' => $validator->errors()
             ]);
         }
+    }
+
+    public function edit($id, Request $request){
+        $product = Product::find($id);
+        $subCategories = SubCategory::where('category_id',$product->category_id)->get();
+        $data = [];
+        $data['product'] = $product;
+        $data['subCategories'] = $subCategories;
+        $categories = Category::orderBy('name','ASC')->get();
+        $brands = Brand::orderBy('name','ASC')->get();
+        $data['categories'] = $categories;
+        $data['brands'] = $brands;
+        return view('admin.products.edit',$data);
     }
 }
