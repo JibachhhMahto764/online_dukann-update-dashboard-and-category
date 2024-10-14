@@ -83,7 +83,6 @@ class ProductController extends Controller
                   $productImage->save();
 
                 $imageName = $product->id.'-'.$productImage->id.'-'.time().'.'.$ext;
-
                 $productImage->image = $imageName;
                 $productImage->save();
                 //Generate the thumbnails
@@ -125,14 +124,26 @@ class ProductController extends Controller
 
     public function edit($id, Request $request){
         $product = Product::find($id);
+
+        if(empty($product)){
+         return redirect()->route('products.index')->with('error', 'Product Not found!!!');
+        }
+
+        // fetch product images
+         $productImages = ProductImage::where('product_id',$product->id)->get();
+
         $subCategories = SubCategory::where('category_id',$product->category_id)->get();
+
         $data = [];
-        $data['product'] = $product;
-        $data['subCategories'] = $subCategories;
+        
         $categories = Category::orderBy('name','ASC')->get();
         $brands = Brand::orderBy('name','ASC')->get();
         $data['categories'] = $categories;
         $data['brands'] = $brands;
+        $data['product'] = $product;
+        $data['subCategories'] = $subCategories;
+        $data['productImages'] = $productImages;
+
         return view('admin.products.edit',$data);
     }
     public function update($id, Request $request){
