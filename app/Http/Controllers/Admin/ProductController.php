@@ -9,6 +9,7 @@ use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\SubCategory;
 use App\Models\TempImage;
+use File;
 use Illuminate\Http\Request;
 use Validator;
 use Intervention\Image\Facades\Image;
@@ -198,5 +199,37 @@ class ProductController extends Controller
             ]);
         }
 
+    }
+    public function destroy($id,Request $request){
+        $product = Product::find($id);
+
+        if(empty($product)){
+         $request->session()->flash('error', 'Product Not Found!!!');
+            return response()->json([
+                'status' => false,
+                'notFound' => true
+            ]);
+        }
+        $productImages = ProductImage::where('product_id',$id)->get();
+
+        if(!empty($productImages)){
+
+            foreach($productImages as $productImage){
+                File::delete(public_path('uploads/product/large/'.$productImage->image));
+                File::delete(public_path('uploads/product/small/'.$productImage->image));
+            }
+            ProductImage::where('product_id,$id')->delete();
+        }
+
+        $product->delete();
+          
+        
+       
+            $request->session()->flash('success', 'Product deleted Successfully!!!');
+            return response()->json([
+                'status' => true,
+                'message' => 'Product deleted Succesfully!!!'
+            ]);
+        
     }
 }
