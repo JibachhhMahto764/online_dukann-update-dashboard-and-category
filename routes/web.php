@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\ProductImageController;
 use App\Http\Controllers\Admin\ProductSubCategoryController;
 use App\Http\Controllers\Admin\SubCategoryController;
 use App\Http\Controllers\Admin\TempImagesController;
+use App\Http\Controllers\FrontController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Str;
@@ -29,6 +30,7 @@ use Illuminate\Http\Request;
     return view('welcome');
 });
  */
+Route::get('/',[FrontController::class,'index'])->name('front.home');
 
 
 Route::group(['prefix' => 'admin'],function(){
