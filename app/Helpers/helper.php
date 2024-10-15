@@ -5,4 +5,3 @@ function getCategories(){
     return Category::orderBy('name','ASC')->get();
 }
 
-?>
