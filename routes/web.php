@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\ProductSubCategoryController;
 use App\Http\Controllers\Admin\SubCategoryController;
 use App\Http\Controllers\Admin\TempImagesController;
 use App\Http\Controllers\FrontController;
+use App\Http\Controllers\ShopController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Str;
@@ -31,6 +32,7 @@ use Illuminate\Http\Request;
 });
  */
 Route::get('/',[FrontController::class,'index'])->name('front.home');
+Route::get('/shop/{categorySlug?}/{subCategorySlug?}',[ShopController::class,'index'])->name('front.shop');
 
 
 Route::group(['prefix' => 'admin'],function(){
