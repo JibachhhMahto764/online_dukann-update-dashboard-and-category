@@ -18,7 +18,7 @@
             <div class="row">            
                 <div class="col-md-3 sidebar">
                     <div class="sub-title">
-                        <h2>Categories</h3>
+                        <h2>Categories</h2>
                     </div>
                     <div class="card">
                         <div class="card-body">
@@ -54,7 +54,7 @@
                         </div>
                     </div>
                     <div class="sub-title mt-5">
-                        <h2>Brand</h3>
+                        <h2>Brand</h2>
                     </div>
                     
                     <div class="card">
@@ -73,7 +73,7 @@
                     </div>
 
                     <div class="sub-title mt-5">
-                        <h2>Price</h3>
+                        <h2>Price</h2>
                     </div>
                     
                     <div class="card">
@@ -138,7 +138,8 @@
                        @endif
 
                         <div class="col-md-12 pt-5">
-                            <nav aria-label="Page navigation example">
+                            {{ $products->withQueryString()->links() }}
+                           <!--  <nav aria-label="Page navigation example">
                                 <ul class="pagination justify-content-end">
                                     <li class="page-item disabled">
                                     <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
@@ -150,7 +151,7 @@
                                     <a class="page-link" href="#">Next</a>
                                     </li>
                                 </ul>
-                            </nav>
+                            </nav> -->
                         </div>
                     </div>
                 </div>
