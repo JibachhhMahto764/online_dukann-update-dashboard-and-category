@@ -63,8 +63,21 @@ if ($productAlreadyExist == false){
    public function Cart(){
   
   $cartContent = Cart::content();
- 
+ //dd($cartContent);
   $data['cartContent'] = $cartContent;
    return view('front.cart',$data);
+   }
+   public function updateCart(Request $request){
+        $rowId = $request->rowId;
+        $qty = $request->qty;
+       Cart::update($rowId,$qty);
+             
+       $message = 'Cart updated successfully';
+       session()->flash('success',$message);
+       return response()->json([
+         'status' => true,
+         'message' => $message
+       ]);
+
    }
 }
