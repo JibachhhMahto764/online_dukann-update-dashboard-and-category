@@ -207,7 +207,7 @@ function myFunction() {
                 if (response.status == true){
                     window.location.href = "{{ route('front.cart') }}"
                 }else{
-                    alert('response.message');
+                    alert(response.message);
                 }
              }
          });

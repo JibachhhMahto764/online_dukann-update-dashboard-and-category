@@ -11,12 +11,12 @@ class CartController extends Controller
 {
    public function addToCart(Request $request){
 
-      $product = Product::with('product_images')->find('$request->id');
+      $product = Product::with('product_images')->find($request->id);
 
        if ($product == null){
          return response()->json([
            'status' => false,
-           'message' => 'product not found!!!'
+           'message' => ' product not found!!!'
          ]);
       } 
 if (Cart::count() > 0){
@@ -38,12 +38,12 @@ if ($productAlreadyExist == false){
    Cart::add( $product->id, $product->title, 1, $product-> price,['productImage' => (!empty($product->product_images)) ? $product->product_images->first() : '']);
 
    $status = true;
-   $message = $product->title. 'already added in cart';
+   $message = $product->title. ' already added in cart';
 }else{
 
    
    $status = false;
-   $message = $product->title. 'already added in cart';
+   $message = $product->title. ' already added in cart';
 }
 
       }else{
@@ -52,7 +52,7 @@ if ($productAlreadyExist == false){
          Cart::add( $product->id, $product->title, 1, $product-> price,['productImage' => (!empty($product->product_images)) ? $product->product_images->first() : '']);
 
          $status = true;
-         $message = $product->title.'added in cart';
+         $message = $product->title. ' added in cart';
       }
       return response()->json([
          'status' => $status,
