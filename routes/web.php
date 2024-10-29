@@ -33,6 +33,7 @@ use Illuminate\Http\Request;
 });
  */
 // frontend route
+
 Route::get('/',[FrontController::class,'index'])->name('front.home');
 Route::get('/shop/{categorySlug?}/{subCategorySlug?}',[ShopController::class,'index'])->name('front.shop');
 Route::get('/product/{slug}',[ShopController::class,'product'])->name('front.product');
@@ -56,8 +57,6 @@ Route::group(['prefix' => 'admin'],function(){
 
 
   });
-
-
 
   Route::group(['middleware'=>'admin.auth'],function(){
 
@@ -107,9 +106,6 @@ Route::group(['prefix' => 'admin'],function(){
      Route::post('/upload-temp-image',[TempImagesController::class,'create'])->name('temp-images.create');
 
 
-
-
-
     Route::get('/getSlug',function(Request $request){
       $slug = '';
       if(!empty($request->title)){
@@ -123,9 +119,5 @@ Route::group(['prefix' => 'admin'],function(){
 
 
   });
-
-
-
-
 
 });
