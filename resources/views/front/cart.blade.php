@@ -19,7 +19,7 @@
                 @if (Session::has('success'))
                 <div class="col-md-12">
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    {{Session::get('success') }}
+                    {{ Session::get('success') }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                    </div>
@@ -34,6 +34,7 @@
                    </div>
                 @endif
 
+                @if(Cart::count() > 0)
                 <div class="col-md-8">
                     <div class="table-responsive">
                         <table class="table" id="cart">
@@ -47,10 +48,10 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @if (!empty($cartContent))
+                               
                                 @foreach ($cartContent as $item )
                                 <tr>
-                                    <td>
+                                    <td class="text-start">
                                         <div class="d-flex align-items-center ">
                                            
                                               @if (!empty($item->options->productImage->image))
@@ -83,12 +84,12 @@
                                     ${{ $item->price*$item->qty }}
                                     </td>
                                     <td>
-                                        <button class="btn btn-sm btn-danger"><i class="fa fa-times"></i></button>
+                                        <button class="btn btn-sm btn-danger" onclick="deleteItem('{{$item->rowId}}');"><i class="fa fa-times"></i></button>
                                     </td>
                                 </tr>
 
                                 @endforeach
-                                @endif                         
+                                                        
                             </tbody>
                         </table>
                     </div>
@@ -121,6 +122,16 @@
                         <button class="btn btn-dark" type="button" id="button-addon2">Apply Coupon</button>
                     </div> --> 
                 </div>
+                @else
+                 <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body d-flex justify-content-center align-items-center">
+                            <h4> Your cart is empty!!!</h4>
+                        </div>
+                    </div>
+                    </div>
+                
+                @endif 
             </div>
         </div>
     </section>
@@ -159,12 +170,29 @@
                     data:{rowId:rowId,qty:qty},
                     dataType:'json',
                     success: function(response){
-                           if (response.status == true){
-                            window.location.href = '{{ route("front.cart") }}'
-                           }
+                           
+                            window.location.href = '{{ route("front.cart") }}';
+                           
 
                     }
-                })
+                });
             }
-            </script>      
+            // delete the cart product 
+            function deleteItem(rowId){
+             if(confirm("Are you sure you want to delete?")){
+                $.ajax({
+                    url:'{{ route('front.deleteItem.cart')}}',
+                    type:'post',
+                    data:{rowId:rowId},
+                    dataType:'json',
+                    success: function(response){
+                           
+                            window.location.href = '{{ route("front.cart") }}';
+                           
+
+                    }
+                });
+              }
+            }
+          </script>      
      @endsection
