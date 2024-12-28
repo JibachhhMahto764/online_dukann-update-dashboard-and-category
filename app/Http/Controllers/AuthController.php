@@ -11,6 +11,7 @@ class AuthController extends Controller
     }
 
     public function register(){
+        return view ('front.account.register');
         
     }
 }
