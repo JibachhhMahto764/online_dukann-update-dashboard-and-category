@@ -53,12 +53,16 @@
 <script type="text/javascript">
     $("#registrationForm").submit(function (event) {
         event.preventDefault();
+
+       $("button[type='submit']").prop('disabled',true);
+
         $.ajax({
             url:'{{ route("account.processRegister")}}',
             type:'post',
             data:$(this).serializeArray(),
             dataType:'json',
             success:function(response){
+                $("button[type='submit']").prop('disabled',false);
                   var errors =response.errors;
                  if(response.status == false){
                      
@@ -102,6 +106,7 @@
                     $("#password").siblings("p").removeClass('invalid-feedback').html('');
                     $("#password").removeClass('is-invalid');
 
+                    window.location.href ="{{route('account.login')}}";
                  }
             },
 
