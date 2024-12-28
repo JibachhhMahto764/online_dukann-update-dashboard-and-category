@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use Hash;
 use Illuminate\Http\Request;
 use Validator;
 
 class AuthController extends Controller
 {
     public function login(){
+        return view('front.account.login');
 
     }
 
@@ -22,6 +25,20 @@ class AuthController extends Controller
            'password'=>'required|min:5|confirmed'
         ]);
         if ($validator->passes()){
+
+            $user = new User;
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->password = Hash::make($request->password);
+            $user->save();
+
+            session()->flash('success','You have been register successfully.!!!');
+
+
+
+
+
+
             return response()->json([
                 'status' =>true,
                 
