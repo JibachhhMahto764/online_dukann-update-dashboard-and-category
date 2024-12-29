@@ -48,14 +48,20 @@ Route::post('/delete-item',[CartController::class,'deleteItem'])->name('front.de
 Route::group(['prefix' =>'account'],function(){
      Route::group(['middleware' =>'guest'],function(){
     // frontend Authentication
-      Route::get('/login',[AuthController::class,'login'])->name('account.login');
+      Route::get('/login',action: [AuthController::class,'login'])->name('account.login');
+      Route::post('/login',action: [AuthController::class,'authenticate'])->name('account.authenticate');
+
+
       Route::get('/register',[AuthController::class,'register'])->name('account.register');
       Route::post('/process-register',[AuthController::class,'processRegister'])->name('account.processRegister');
+      Route::get('/logout',action: [AuthController::class,'logout'])->name('account.logout');
 
 
      });
      Route::group(['middleware' =>'auth'],function(){
-      
+     
+      Route::get('/profile',action: [AuthController::class,'profile'])->name('account.profile');
+      Route::get('/logout',action: [AuthController::class,'logout'])->name('account.logout');
 
      });
 
