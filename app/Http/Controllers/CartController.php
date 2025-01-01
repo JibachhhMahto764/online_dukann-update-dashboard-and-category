@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Country;
+use App\Models\CustomerAddress;
 use App\Models\Product;
 use Auth;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Http\Request;
+use Validator;
 
 
 class CartController extends Controller
@@ -146,5 +148,52 @@ if ($productAlreadyExist == false){
      session()->forget('url.intended');
      $countries = Country::orderBy('name','ASC')->get();
       return view('front.checkout',['countries' => $countries]);
+   }
+   public function processCheckout(Request $request){
+      // step-1 apply validation
+
+      $validator = Validator::make($request->all(),[
+      'first_name' => 'required|min:5',
+      'last_name' => 'required',
+      'email' => 'required|email',
+      'country' => 'required',
+      'address' => 'required|min:3',
+      'city' => 'required',
+      'state' => 'required',
+      'zip' => 'required',
+      'mobile' => 'required',
+      ]);
+
+      if ($validator->fails()){
+         return response()->json([
+            'message' => 'Please fix the errors',
+            'status' => false,
+            'errors' => $validator->errors()
+         ]);
+      }
+
+      // step -2 save user address
+  // $customerAddress = CustomerAddress::find();
+      $user = Auth::user();
+
+   CustomerAddress::updateOrCreate(
+      ['user_id' => $user->id],
+      [
+         'user_id' => $user->id,
+         'first_name' => $request->first_name,
+         'last_name' => $request->last_name,
+         'email' => $request->email,
+         'mobile' => $request->mobile,
+         'country_id' => $request->country,
+         'address' => $request->address,
+         'apartment' => $request->apartment,
+         'city' => $request->city,
+         'state' => $request->state,
+         'zip' => $request->zip,
+         
+         
+      ]
+   );
+
    }
 }
