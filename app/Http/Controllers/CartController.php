@@ -253,6 +253,7 @@ if ($productAlreadyExist == false){
        }
 
    }
+  
    public function thankyou(){
       return view('front.thanks');
    }

@@ -53,7 +53,7 @@ Route::group(['prefix' =>'account'],function(){
     // frontend Authentication
       Route::get('/login',action: [AuthController::class,'login'])->name('account.login');
       Route::post('/login',action: [AuthController::class,'authenticate'])->name('account.authenticate');
-
+      
 
       Route::get('/register',[AuthController::class,'register'])->name('account.register');
       Route::post('/process-register',[AuthController::class,'processRegister'])->name('account.processRegister');

@@ -4,8 +4,8 @@
         <div class="container">
             <div class="light-font">
                 <ol class="breadcrumb primary-color mb-0">
-                    <li class="breadcrumb-item"><a class="white-text" href="#">Home</a></li>
-                    <li class="breadcrumb-item"><a class="white-text" href="#">Shop</a></li>
+                    <li class="breadcrumb-item"><a class="white-text" href="{{route('front.home') }}">Home</a></li>
+                    <li class="breadcrumb-item"><a class="white-text" href="{{route('front.shop') }}">Shop</a></li>
                     <li class="breadcrumb-item">Checkout</li>
                 </ol>
             </div>
@@ -14,7 +14,8 @@
 
     <section class="section-9 pt-4">
         <div class="container">
-            <form id="orderForm" name="orderForm" action="" method="post"> 
+            <form id="orderForm" name="orderForm" action="{{ route('front.processCheckout') }}" method="post"> 
+                @csrf
             <div class="row">
                 <div class="col-md-8">
                     <div class="sub-title">
@@ -189,26 +190,30 @@
 @endsection
 @section('customJs')
 <script>
-    $("#payment_method_one").click(function(){
-        if ($(this).is(":checked") == true){
-            $("#card-payment-form").addClass('d-none');
-        }
-    });
+            
+                $("#payment_method_one").click(function(){
+                    if ($(this).is(":checked") == true){
+                        $("#card-payment-form").addClass('d-none');
+                    }
+                });
 
-    $("#payment_method_two").click(function(){
-        if ($(this).is(":checked") == true){
-            $("#card-payment-form").removeClass('d-none');
-        }
-    });
+                $("#payment_method_two").click(function(){
+                    if ($(this).is(":checked") == true){
+                        $("#card-payment-form").removeClass('d-none');
+                    }
+                });
 
 
-    $("#orderForm").submit(function(event){
-        event.preventDefault();
-      $('button[type="submit"]').prop('disabled',true);
+                $("#orderForm").submit(function(event){
+                    event.preventDefault();
+                $('button[type="submit"]').prop('disabled',true);
         $.ajax({
       url:'{{ route("front.processCheckout")}}',
       type:'post',
       data:$(this).serializeArray(),
+      headers: {
+        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+    },
       dataType:'json',
       success:function(response){
        var errors =response.errors;
@@ -329,7 +334,8 @@
 
                }
       }else{
-        window.location.href="{{ url('/thanks/') }}/"+response.orderId;
+        window.location.href = "{{ route('front.thankyou') }}/" + response.orderId;
+
       }
     });
  });
