@@ -87,8 +87,8 @@
                                             <td>{{ ($ShippingCharge->country_id === 'rest_of_world') ? 'Rest of the world' : $ShippingCharge->name }}</td>
                                             <td>${{ $ShippingCharge->amount }}</td>
                                             <td>
-                                            <a href="#" class=" btn btn-primary">Edit</a>
-                                            <a href="#" class="btn btn-danger">Delete</a>
+                                            <a href="{{route('shipping.edit',$ShippingCharge->id)}}" class=" btn btn-primary">Edit</a>
+                                            <a href="javascript:void(0);" onclick="deleteRecord({{ $ShippingCharge->id }}" class="btn btn-danger">Delete</a>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -142,6 +142,33 @@
 				console.log("Something went wrong");
 			}
 		});
+		function deleteRecord(id) {
+    var url = '{{ route('shipping.delete', 'ID') }}'.replace('ID', id); // Replace ID with the actual ID
+
+    if (confirm("Are you sure you want to delete this record?")) {
+        $.ajax({
+            url: url,
+            type: 'DELETE',
+            dataType: 'json',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Ensure CSRF token is included
+            },
+            success: function(response) {
+                if (response.status) {
+                    alert("Record deleted successfully!");
+                    location.reload(); // Reload the page to reflect changes
+                } else {
+                    alert("Failed to delete the record!");
+                }
+            },
+            error: function() {
+                alert("An error occurred while deleting the record.");
+            }
+        });
+    }
+}
+
 	});
+
 </script>
 @endsection
