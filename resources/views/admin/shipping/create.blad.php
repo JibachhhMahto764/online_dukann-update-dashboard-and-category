@@ -60,49 +60,46 @@
 								<p class="invalid-feedback">{{ $message }}</p>
 							@enderror
 						</div>
-                        
+                        <div class="col-md-4">
 						 <div class="col-md-2 mt-2">
 							<button type="submit" class="btn btn-primary">Create</button>
 						</div>
-                        
+                        </div>
 					</div>
 				</div>							
 			</div>
 		</form>
         <div class="card">
             <div class="card-body">
-                <table class="table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th>Country</th>
-                            <th>Amount</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    @if ($shippings->isNotEmpty())
-                            @foreach ($shippings as $shipping)
-                                <tr>
-                                    <td>{{ $shipping->country->name }}</td>
-                                    <td>{{ $shipping->amount }}</td>
-                                    <td>
-                                        <a href="{{ route('shipping.edit', $shipping->id) }}" class="btn btn-primary btn-sm">Edit</a>
-                                        <form action="{{ route('shipping.destroy', $shipping->id) }}" method="POST" style="display: inline-block;">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this item?');">Delete</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        @else
-                            <tr>
-                                <td colspan="3" class="text-center">No data found</td>
-                            </tr>
-                        @endif
-                    </tbody>
-                </table>
+                <dic class="row">
+                    <div class="col-md-12">
+                        <table class="table table-striped">
+                               <tr>
+                                  <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Amount</th>
+                                    <th>Action</th>
+                               </tr>
+                                     @if ($shippingCharge->isNotEmpty()) <!-- Use $shippingCharge, as defined in the controller -->
+                                    @foreach ($shippingCharge as $ShippingCharge) <!-- Iterate over $shippingCharge -->
+                                        <tr>
+                                            <td>{{ $ShippingCharge->id }}</td>
+                                            <td>{{ ($ShippingCharge->country_id === 'rest_of_world') ? 'Rest of the world' : $ShippingCharge->name }}</td>
+                                            <td>${{ $ShippingCharge->amount }}</td>
+                                            <td>
+                                            <a href="#" class=" btn btn-primary">Edit</a>
+                                            <a href="#" class="btn btn-danger">Delete</a>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @endif
+
+
+                        </table>
+                    </div>
+                </dic>
             </div>
+        </div>
 	</div>
 </section>
 @endsection
