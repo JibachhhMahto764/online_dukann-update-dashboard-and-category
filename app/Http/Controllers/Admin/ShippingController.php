@@ -87,21 +87,23 @@ class ShippingController extends Controller
             ]);
         }
     }
-    public function destroy($id){
+    public function destroy($id) {
         $shipping = ShippingCharge::find($id);
-        if ($shipping == null){
-            session()->flash('error','Shipping not found');
+    
+        if (!$shipping) { // If no record is found
             return response()->json([
-                'status'=>true,
-                'errors' => 'Shipping not found'
-            ]);
+                'status' => false,
+                'error' => 'Shipping not found',
+            ], 404); // Return appropriate HTTP status code
         }
+    
+        // Delete the record
         $shipping->delete();
-        session()->flash('success','Shipping deleted successfully');
+    
         return response()->json([
-            'status'=>true,
-            
+            'status' => true,
+            'message' => 'Shipping deleted successfully',
         ]);
-        
     }
+    
 }

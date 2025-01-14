@@ -88,7 +88,7 @@
                                             <td>${{ $ShippingCharge->amount }}</td>
                                             <td>
                                             <a href="{{route('shipping.edit',$ShippingCharge->id)}}" class=" btn btn-primary">Edit</a>
-                                            <a href="javascript:void(0);" onclick="deleteRecord({{ $ShippingCharge->id }}" class="btn btn-danger">Delete</a>
+                                            <a href="javascript:void(0);" onclick="deleteRecord({{ $ShippingCharge->id }})" class="btn btn-danger">Delete</a>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -106,69 +106,85 @@
 
 @section('customJs')
 <script>
-	$("#shippingForm").submit(function (event) {
-		event.preventDefault();
-		var element = $(this);
-		$("button[type=submit]").prop('disabled', true);
+    // Submit handler for #shippingForm
+    $("#shippingForm").submit(function (event) {
+        event.preventDefault(); // Prevent default form submission
+        var element = $(this);
+        $("button[type=submit]").prop('disabled', true);
 
-		$.ajax({
-			url: "{{ route('shipping.store') }}",
-			type: 'POST',
-			data: element.serializeArray(),
-			dataType: 'json',
-			success: function(response) {
-				$("button[type=submit]").prop('disabled', false);
-
-				if (response.status) {
-					window.location.href = "{{ route('shipping.create') }}";
-				} else {
-					var errors = response.errors;
-
-					if (errors.country) {
-						$("#country").addClass('is-invalid').siblings('p').addClass('invalid-feedback').html(errors.country);
-					} else {
-						$("#country").removeClass('is-invalid').siblings('p').removeClass('invalid-feedback').html('');
-					}
-
-					if (errors.amount) {
-						$("#amount").addClass('is-invalid').siblings('p').addClass('invalid-feedback').html(errors.amount);
-					} else {
-						$("#amount").removeClass('is-invalid').siblings('p').removeClass('invalid-feedback').html('');
-					}
-				}
-			},
-			error: function() {
-				$("button[type=submit]").prop('disabled', false);
-				console.log("Something went wrong");
-			}
-		});
-		function deleteRecord(id) {
-    var url = '{{ route('shipping.delete', 'ID') }}'.replace('ID', id); // Replace ID with the actual ID
-
-    if (confirm("Are you sure you want to delete this record?")) {
         $.ajax({
-            url: url,
-            type: 'DELETE',
+            url: "{{ route('shipping.store') }}",
+            type: 'POST',
+            data: element.serializeArray(),
             dataType: 'json',
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Ensure CSRF token is included
-            },
             success: function(response) {
+                $("button[type=submit]").prop('disabled', false);
+
                 if (response.status) {
-                    alert("Record deleted successfully!");
-                    location.reload(); // Reload the page to reflect changes
+                    window.location.href = "{{ route('shipping.create') }}";
                 } else {
-                    alert("Failed to delete the record!");
+                    var errors = response.errors;
+
+                    // Handle validation errors
+                    if (errors.country) {
+                        $("#country").addClass('is-invalid')
+                            .siblings('p')
+                            .addClass('invalid-feedback')
+                            .html(errors.country);
+                    } else {
+                        $("#country").removeClass('is-invalid')
+                            .siblings('p')
+                            .removeClass('invalid-feedback')
+                            .html('');
+                    }
+
+                    if (errors.amount) {
+                        $("#amount").addClass('is-invalid')
+                            .siblings('p')
+                            .addClass('invalid-feedback')
+                            .html(errors.amount);
+                    } else {
+                        $("#amount").removeClass('is-invalid')
+                            .siblings('p')
+                            .removeClass('invalid-feedback')
+                            .html('');
+                    }
                 }
             },
             error: function() {
-                alert("An error occurred while deleting the record.");
+                $("button[type=submit]").prop('disabled', false);
+                console.log("Something went wrong");
             }
         });
+    });
+
+    // Delete handler
+    function deleteRecord(id) {
+        var url = '{{ route("shipping.delete", ":id") }}'.replace(':id', id); // Replace :id with the actual ID
+
+        if (confirm("Are you sure you want to delete this record?")) {
+            $.ajax({
+                url: url,
+                type: 'DELETE',
+                dataType: 'json',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'), // Ensure CSRF token is included
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                success: function(response) {
+                    if (response.status) {
+                        alert("Record deleted successfully!");
+                        location.reload(); // Reload the page to reflect changes
+                    } else {
+                        alert("Failed to delete the record!");
+                    }
+                },
+                error: function(xhr) {
+                    console.error(xhr.responseText); // Log the error for debugging
+                    alert("An error occurred while deleting the record.");
+                }
+            });
+        }
     }
-}
-
-	});
-
 </script>
 @endsection
