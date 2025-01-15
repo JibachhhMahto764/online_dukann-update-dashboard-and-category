@@ -59,54 +59,53 @@
                                         <p></p>
                                     </div>            
                                 </div>
-
                                 <div class="col-md-12">
                                     <div class="mb-3">
-                                        <textarea name="address" id="address" cols="30" rows="3" placeholder="Address" class="form-control" >{{ (!empty($customerAddress)) ? $customerAddress->address : '' }} </textarea>
+                                        <textarea name="address" id="address" cols="30" rows="3" placeholder="Address" class="form-control">{{ !empty($customerAddress) ? $customerAddress->address : '' }}</textarea>
                                         <p></p>
                                     </div>            
                                 </div>
-
                                 <div class="col-md-12">
                                     <div class="mb-3">
-                                        <input type="text" name="apartment" id="apartment" class="form-control" placeholder="Apartment, suite, unit, etc. (optional)" value ="{{ (!empty($customerAddress)) ? $customerAddress->apartment : '' }} " >
+                                        <input type="text" name="apartment" id="apartment" class="form-control" placeholder="Apartment, suite, unit, etc. (optional)" value="{{ !empty($customerAddress) ? $customerAddress->apartment : '' }}" >
                                         <p></p>
                                     </div>            
                                 </div>
 
                                 <div class="col-md-4">
                                     <div class="mb-3">
-                                        <input type="text" name="city" id="city" class="form-control" placeholder="City" value ="{{ (!empty($customerAddress)) ? $customerAddress->city : '' }} " >
+                                        <input type="text" name="city" id="city" class="form-control" placeholder="City" value="{{ !empty($customerAddress) ? $customerAddress->city : '' }}" >
                                         <p></p>
                                     </div>            
                                 </div>
 
                                 <div class="col-md-4">
                                     <div class="mb-3">
-                                        <input type="text" name="state" id="state" class="form-control" placeholder="State" value ="{{ (!empty($customerAddress)) ? $customerAddress->state : '' }} ">
+                                        <input type="text" name="state" id="state" class="form-control" placeholder="State" value="{{ !empty($customerAddress) ? $customerAddress->state : '' }}" >
                                         <p></p>
                                     </div>            
                                 </div>
                                 
                                 <div class="col-md-4">
                                     <div class="mb-3">
-                                        <input type="text" name="zip" id="zip" class="form-control" placeholder="Zip" value ="{{ (!empty($customerAddress)) ? $customerAddress->zip : '' }} ">
+                                        <input type="text" name="zip" id="zip" class="form-control" placeholder="Zip" value="{{ !empty($customerAddress) ? $customerAddress->zip : '' }}">
                                         <p></p>
                                     </div>            
                                 </div>
 
                                 <div class="col-md-12">
                                     <div class="mb-3">
-                                        <input type="text" name="mobile" id="mobile" class="form-control" placeholder="Mobile No." value ="{{ (!empty($customerAddress)) ? $customerAddress->mobile : '' }} ">
+                                        <input type="text" name="mobile" id="mobile" class="form-control" placeholder="Mobile No." value="{{ !empty($customerAddress) ? $customerAddress->mobile : '' }}">
                                         <p></p>
                                     </div>            
                                 </div>
                                 
 
                                 <div class="col-md-12">
-                                    <div class="mb-3">
-                                        <textarea name="order_notes" id="order_notes" cols="30" rows="2" placeholder="Order Notes (optional)" class="form-control"> {{ (!empty($customerAddress)) ? $customerAddress->order_notes : '' }} </textarea>
-                                    </div>            
+                                <div class="mb-3">
+                                    <textarea name="order_notes" id="order_notes" cols="30" rows="2" placeholder="Order Notes (optional)" class="form-control">{{ !empty($customerAddress) ? $customerAddress->order_notes : '' }}</textarea>
+                                </div>
+                                            
                                 </div>
 
                             </div>
@@ -134,11 +133,11 @@
                             </div>
                             <div class="d-flex justify-content-between mt-2">
                                 <div class="h6"><strong>Shipping</strong></div>
-                                <div class="h6"><strong>$0</strong></div>
+                                <div class="h6"><strong id="ShippingAmount">${{ number_format($totalShippingCharge,2) }}</strong></div>
                             </div>
                             <div class="d-flex justify-content-between mt-2 summery-end">
                                 <div class="h5"><strong>Total</strong></div>
-                                <div class="h5"><strong>${{Cart::Subtotal() }}</strong></div>
+                                <div class="h5"><strong id="grandTotal">${{ number_format($grandTotal,2) }}</strong></div>
                             </div>                            
                         </div>
                     </div>   
@@ -336,6 +335,28 @@
             }
         }); 
     }); 
+
+    $("#country").change(function() {
+        $.ajax({
+            url: '{{ route("front.getOrderSummery")}}',
+            type: 'post',
+            data: {
+                country_id: $(this).val()
+            },
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            dataType: 'json',
+            success: function(response) {
+                if (response.status == true) {
+                    $("#ShippingAmount").html('$'+response.shippingCharge);
+                    $("#grandTotal").html(response.grandTotal);
+                }
+
+
+            }
+        });
+    });
 </script>
 
    
