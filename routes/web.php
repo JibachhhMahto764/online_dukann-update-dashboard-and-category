@@ -143,7 +143,8 @@ Route::group(['prefix' => 'admin'],function(){
       // coupon code route
       Route::get('/coupons',[DiscountCodeController::class,'index'])->name('coupons.index'); 
       Route::get('/coupons/create',[DiscountCodeController::class,'create'])->name('coupons.create');
-      Route::post('/coupons',[DiscountCodeController::class,'store'])->name('coupons.store');  
+      Route::post('/coupons',[DiscountCodeController::class,'store'])->name('coupons.store'); 
+      Route::get('/coupons/{coupon}/edit',[DiscountCodeController::class,'edit'])->name('coupons.edit'); 
       
 
 
