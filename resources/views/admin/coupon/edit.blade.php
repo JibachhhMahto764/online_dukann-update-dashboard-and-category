@@ -137,8 +137,8 @@
       var element = $(this);
 	  $("button[type = submit]").prop('disabled',true);
       $.ajax({
-         url: "{{ route('coupons.store') }}", // 
-         type: 'post',
+         url: "{{ route('coupons.update',$coupon->id) }}", // 
+         type: 'put',
          data: element.serializeArray(),
          dataType: 'json',
          success: function(response){

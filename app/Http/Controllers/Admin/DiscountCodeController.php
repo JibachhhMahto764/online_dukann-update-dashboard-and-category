@@ -15,6 +15,7 @@ class DiscountCodeController extends Controller
         $DiscountCoupons = DiscountCoupon::latest();
       if (!empty($request->get('keyword'))){
         $DiscountCoupons = $DiscountCoupons->where('name','like','%'.$request->get('keyword').'%');
+        $DiscountCoupons = $DiscountCoupons->orWhere('code','like','%'.$request->get('keyword').'%');
       }
        $DiscountCoupons = $DiscountCoupons->paginate(10);
 
@@ -99,10 +100,17 @@ class DiscountCodeController extends Controller
         $data['coupon'] = $coupon;
        return view('admin.coupon.edit',$data);
     }
-    public function update(Request $request)
+    public function update(Request $request,$id)
     {
-        $discountCode = new DiscountCoupon();
-        
+        $discountCode = DiscountCoupon::find($id);
+
+        if ($discountCode == null) {
+            session()->flash('error','Discount Coupon not found');
+            return response()->json([
+                'status'=>true
+            ]);
+        }
+
         $validator = Validator::make($request->all(),[
             'code' => 'required',
             'type' => 'required',
@@ -111,18 +119,7 @@ class DiscountCodeController extends Controller
 
         ]);
           if ($validator->passes()){
-            // starting date must be greater than current date
-               if (!empty($request->starts_at)) {
-                $now = Carbon::now();
-                $startAt = Carbon::createFromFormat('Y-m-d H:i:s', $request->starts_at);
-
-                if ($startAt->lt($now) ==true) {
-                    return response()->json([
-                        'status'=>false,
-                        'error'=>['starts_at' =>'Starting date must be greater than current date time']
-                    ]);
-                }
-            }
+        
 
             // expiry date must be greater than starting date
             if (!empty($request->starts_at) && !empty($request->ends_at)) {
@@ -137,7 +134,6 @@ class DiscountCodeController extends Controller
                 }
             }
 
-            
             $discountCode->code = $request->code;
             $discountCode->name = $request->name;
             $discountCode->description = $request->description;
@@ -151,10 +147,9 @@ class DiscountCodeController extends Controller
             $discountCode->ends_at = $request->ends_at;
             $discountCode->save();
 
-            session()->flash('success','Discount Coupon Created Successfully');
+            session()->flash('success','Discount Coupon Updated Successfully');
             return response()->json([
-                'status'=>true,
-                'message'=>'Discount Coupon Created Successfully'
+                'status'=>true
             ]);
 
           }else{
@@ -166,8 +161,20 @@ class DiscountCodeController extends Controller
            
         
     }
-    public function destroy()
+    public function destroy(Request $request,$id)
     {
-        
+        $discountCode = DiscountCoupon::find($id);
+
+        if ($discountCode == null) {
+            session()->flash('error','Discount Coupon not found');
+            return response()->json([
+                'status'=>true
+            ]);
+        }
+       $discountCode->delete();
+         session()->flash('success','Discount Coupon Deleted Successfully');
+            return response()->json([
+                'status'=>true
+            ]);
     }
 }
