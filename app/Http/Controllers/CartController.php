@@ -138,6 +138,7 @@ if ($productAlreadyExist == false){
    }
    public function checkout(){
       //-- if cart is empty redirect to cart page
+      $discount = 0;
       if (Cart::count() == 0){
          return redirect()->route('front.cart');
       }
@@ -154,6 +155,20 @@ if ($productAlreadyExist == false){
 
      session()->forget('url.intended');
      $countries = Country::orderBy('name','ASC')->get();
+
+    // Apply Discount Here
+       Cart::subtotal(2,'.','');
+         $subTotal = Cart::subtotal(2,'.','');
+          
+     if (session()->has('code')){
+      $code = session()->get('code');
+       if ($code->type == 'percentage'){
+         $discount = ($code->discount_amount/100)*$subTotal;
+         }else{  
+            $discount = $code->discount_amount;   
+
+  }
+}
 
      // calculate shipping here
       
@@ -172,10 +187,10 @@ if ($productAlreadyExist == false){
       }
       $totalShippingCharge = $totalQty*$shippingInfo->amount;
  
-      $grandTotal = Cart::subtotal(2,'.','')+$totalShippingCharge;
+      $grandTotal = ($subTotal-$discount)+$totalShippingCharge;
  
     }else{
-      $grandTotal = Cart::subtotal(2,'.','');
+      $grandTotal = ($subTotal-$discount);
       $totalShippingCharge = 0;
     }
 
@@ -183,6 +198,7 @@ if ($productAlreadyExist == false){
          'countries' => $countries,
          'customerAddress' => $customerAddress,
          'totalShippingCharge' => $totalShippingCharge,
+         'discount' => $discount,
          'grandTotal' => $grandTotal,
       ]);
    }
@@ -232,10 +248,26 @@ if ($productAlreadyExist == false){
        // step -3 store data in orders table
 
        if ($request->payment_method == 'cod'){
+        
+         $promoCode = '';
+         
          $shipping = 0;
          $discount = 0;
          $subTotal = Cart::subtotal(2,'.', '');
         
+              // Apply Discount Here 
+              if (session()->has('code')){
+               $code = session()->get('code');
+               if ($code->type == 'percentage'){
+                  $discount = ($code->discount_amount/100)*$subTotal;
+                  }else{  
+                     $discount = $code->discount_amount;   
+
+              }
+           
+            $promoCode = $code->code;
+           
+         }     
 
          // calculate the shipping charge
          $shippingInfo = ShippingCharge::where('country_id',$request->country)->first();
@@ -246,24 +278,25 @@ if ($productAlreadyExist == false){
          
          if ($shippingInfo != null){
             $shipping = $totalQty*$shippingInfo->amount;
-            $grandTotal = $subTotal+$shipping;
+            $grandTotal = ($subTotal-$discount)+$shipping;
 
          }else{
 
             $shippingInfo = ShippingCharge::where('country_id','rest_of_world')->first();
             $shipping = $totalQty*$shippingInfo->amount;
-            $grandTotal = $subTotal+$shipping;
+            $grandTotal = ($subTotal-$discount)+$shipping;
 
          }
-
         
 
          $order = new Order;
          $order->subtotal = $subTotal;
          $order->shipping = $shipping;
          $order->grand_total = $grandTotal;
+         $order->discount = $discount;
+         $order->coupon_code = $promoCode;
+        
          $order->user_id = $user->id;
-
          $order->first_name = $request->first_name;
          $order->last_name = $request->last_name;
          $order->email = $request->email;
@@ -291,6 +324,7 @@ if ($productAlreadyExist == false){
         }
          session()->flash('success','You have successfully placed your order.');
          Cart::destroy();
+         session()->forget('code');
         return response()->json([
           'message' => 'Order saved successfully.',
           'orderId' =>$order->id,
@@ -311,6 +345,25 @@ if ($productAlreadyExist == false){
    public function getOrderSummery(Request $request){
 
       $subTotal = Cart::subtotal(2,'.','');
+      $discount = 0;
+      $discountString = '';
+      // Apply Discount Here 
+     if (session()->has('code')){
+         $code = session()->get('code');
+          if ($code->type == 'percentage'){
+            $discount = ($code->discount_amount/100)*$subTotal;
+            }else{  
+               $discount = $code->discount_amount;   
+
+     }
+      $discountString = ' <div class="  mt-4" id="discount_code_applied">
+      <strong>'.session()->get('code')->code. '</strong>
+      <a class="btn btn-sm btn-danger" id="removeDiscount"><i class="fa fa-times"></i> </a>
+      </div> ';
+   }
+
+    
+
       if ($request->country_id > 0){
         
          $shippingInfo = ShippingCharge::where('country_id',$request->country_id)->first();
@@ -323,11 +376,13 @@ if ($productAlreadyExist == false){
          if ($shippingInfo != null){
 
             $shippingCharge = $totalQty*$shippingInfo->amount;
-            $grandTotal = $subTotal+$shippingCharge;
+            $grandTotal = ($subTotal-$discount)+$shippingCharge;
 
             return response()->json([
                'status' => true, 
                'grandTotal' => number_format($grandTotal,2),
+               'discount' => $discount,
+               'discountString' => $discountString,
                'shippingCharge' => number_format($shippingCharge,2),
               
             ]);
@@ -336,11 +391,13 @@ if ($productAlreadyExist == false){
 
             $shippingInfo = ShippingCharge::where('country_id','rest_of_world')->first();
             $shippingCharge = $totalQty*$shippingInfo->amount;
-            $grandTotal = $subTotal+$shippingCharge;
+            $grandTotal = ($subTotal-$discount)+$shippingCharge;
 
             return response()->json([
                'status' => true, 
                'grandTotal' => number_format($grandTotal,2),
+               'discount' => $discount,
+               'discountString' => $discountString,
                'shippingCharge' => number_format($shippingCharge,2),
                
             
@@ -351,7 +408,9 @@ if ($productAlreadyExist == false){
       
         return response()->json([
            'status' => true,
-           'grandTotal' => number_format($subTotal,2),
+           'grandTotal' => number_format(($subTotal-$discount),2),
+           'discount' => $discount,
+             'discountString' => $discountString,
            'shippingCharge' => number_format(0,2),
           
           
@@ -371,10 +430,9 @@ if ($productAlreadyExist == false){
       // check if the coupon code is valid or not
 
       $now = Carbon::now();
-      echo $now->format('Y-m-d H:i:s');
 
       if ($code->starts_at != ""){
-         $startDate = Carbon::createFromFormat('Y-m-d',$code->starts_at);
+         $startDate = Carbon::createFromFormat('Y-m-d H:i:s',$code->starts_at);
          if ($now->lt($startDate)){
             return response()->json([
                'status' => false,
@@ -383,7 +441,7 @@ if ($productAlreadyExist == false){
          }
       }
       if ($code->ends_at != ""){
-         $endDate = Carbon::createFromFormat('Y-m-d',$code->ends_at);
+         $endDate = Carbon::createFromFormat('Y-m-d H:i:s',$code->ends_at);
          if ($now->gt($endDate)){
             return response()->json([
                'status' => false,
@@ -391,5 +449,11 @@ if ($productAlreadyExist == false){
             ]);
          }
       } 
+      session()->put('code',$code);
+       return $this->getOrderSummery($request);
+   }
+   public function removeDiscount(Request $request){
+      session()->forget('code');
+      return $this->getOrderSummery($request);
    }
 }

@@ -50,7 +50,7 @@ Route::get('/thanks/{orderId}',[CartController::class,'thankyou'])->name('front.
 Route::post('get-order-summery',[CartController::class,'getOrderSummery'])->name('front.getOrderSummery');
 // appplyDiscount route
 Route::post('/apply-discount',[CartController::class,'applyDiscount'])->name('front.applyDiscount');
-
+Route::post('/remove-discount',[CartController::class,'removeDiscount'])->name('front.removeDiscount');
 
 Route::group(['prefix' =>'account'],function(){
      Route::group(['middleware' =>'guest'],function(){
