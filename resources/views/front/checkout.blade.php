@@ -1,3 +1,7 @@
+@php
+use Gloudemans\Shoppingcart\Facades\Cart;
+@endphp
+
 @extends('front.layouts.app')
 @section('content')
 <section class="section-5 pt-3 pb-3 mb-3 bg-white">
@@ -141,7 +145,10 @@
                             </div>                            
                         </div>
                     </div>   
-                    
+                    <div class="input-group apply-coupan mt-4">
+                        <input type="text" placeholder="Coupon Code" class="form-control" name="discount_code" id="discount_code">
+                        <button class="btn btn-dark" type="button" id="apply-discount">Apply Coupon</button>
+                    </div> 
                     <div class="card payment-form ">  
                     <h3 class="card-title h5 mb-3">Payment Method</h3>
                         <div class="">
@@ -357,6 +364,23 @@
             }
         });
     });
+    $("#apply-discount").click(function() {
+        $.ajax({
+            url: '{{ route("front.applyDiscount")}}',
+            type: 'post',
+            data: {
+                code: $("#discount_code").val(), country: $("#country").val()
+            },
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            dataType: 'json',
+            success: function(response) {
+               
+            }
+        });
+    });
+    
 </script>
 
    

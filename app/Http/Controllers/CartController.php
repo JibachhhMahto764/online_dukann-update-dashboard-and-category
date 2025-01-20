@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Country;
 use App\Models\CustomerAddress;
+use App\Models\DiscountCoupon;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\ShippingCharge;
 use Auth;
+use Carbon\Carbon;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Http\Request;
 use Validator;
@@ -356,5 +358,38 @@ if ($productAlreadyExist == false){
         ]);
       }
 
+   }
+   public function applyDiscount(Request $request){
+      //dd($request->code);
+      $code = DiscountCoupon::where('code',$request->code)->first();
+      if ($code == null){
+         return response()->json([
+            'status' => false,
+            'message' => 'Invalid coupon code'
+         ]);
+      }
+      // check if the coupon code is valid or not
+
+      $now = Carbon::now();
+      echo $now->format('Y-m-d H:i:s');
+
+      if ($code->starts_at != ""){
+         $startDate = Carbon::createFromFormat('Y-m-d',$code->starts_at);
+         if ($now->lt($startDate)){
+            return response()->json([
+               'status' => false,
+               'message' => 'Coupon code is not valid yet.'
+            ]);
+         }
+      }
+      if ($code->ends_at != ""){
+         $endDate = Carbon::createFromFormat('Y-m-d',$code->ends_at);
+         if ($now->gt($endDate)){
+            return response()->json([
+               'status' => false,
+               'message' => 'Coupon code is expired.'
+            ]);
+         }
+      } 
    }
 }

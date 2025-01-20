@@ -19,7 +19,7 @@
 				<section class="content">
 					<!-- Default box -->
 					<div class="container-fluid">
-                       <form action= "{{ route('categories.store') }}" method="post" id="discountForm" name="discountForm">
+                       <form action= "{{ route('coupons.store') }}" method="post" id="discountForm" name="discountForm">
 						@csrf
 						<div class="card">
 							<div class="card-body">								
