@@ -84,55 +84,35 @@
 
                             <!-- List group -->
                             <ul>
+                                @foreach ($orderItems as $item) 
+                                
+                               
                                 <li class="list-group-item">
                                     <div class="row align-items-center">
                                         <div class="col-4 col-md-3 col-xl-2">
                                             <!-- Image -->
-                                            <a href="product.html"><img src="images/product-1.jpg" alt="..." class="img-fluid"></a>
-                                        </div>
-                                        <div class="col">
-                                            <!-- Title -->
-                                            <p class="mb-4 fs-sm fw-bold">
-                                                <a class="text-body" href="product.html">Cotton floral print Dress x 1</a> <br>
-                                                <span class="text-muted">$40.00</span>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="list-group-item">
-                                    <div class="row align-items-center">
-                                        <div class="col-4 col-md-3 col-xl-2">
-                                            <!-- Image -->
-                                            <a href="#"><img src="images/product-2.jpg" alt="..." class="img-fluid"></a>
-                                        </div>
-                                        <div class="col">
-                                            <!-- Title -->
-                                            <p class="mb-4 fs-sm fw-bold">
-                                                <a class="text-body" href="#">Suede cross body Bag x 1</a> <br>
-                                                <span class="text-muted">$49.00</span>
-                                            </p>                                       
-                                        </div>
-                                    </div>
-                                </li>
-
-                                <li class="list-group-item">
-                                    <div class="row align-items-center">
-                                        <div class="col-4 col-md-3 col-xl-2">
-                                            <!-- Image -->
-                                            <a href="#"><img src="images/product-3.jpg" alt="..." class="img-fluid"></a>
-
-                                        </div>
-                                        <div class="col">
-
-                                            <!-- Title -->
-                                            <p class="mb-4 fs-sm fw-bold">
-                                                <a class="text-body" href="#">Sweatshirt with Pocket</a> <br>
-                                                <span class="text-muted">$39.00</span>
-                                            </p>
                                             
+                                              @php
+                                              $productImage = getProductImage($item->product_id);
+                                              @endphp
+
+                                               @if (!empty($productImage->image))
+                                                <img class="img-fluid" src="{{asset('uploads/product/small/'.$productImage->image)}}" />
+                                                @else
+                                                <img src="{{asset('admin-assets/img/default-150x150.png')}}"  class="img-fluid" />
+
+                                                @endif
+                                        </div>
+                                        <div class="col">
+                                            <!-- Title -->
+                                            <p class="mb-4 fs-sm fw-bold">
+                                                <a class="text-body" href="product.html">{{ $item->name }} x {{ $item->qty }}</a> <br>
+                                                <span class="text-muted">${{ $item->total }}</span>
+                                            </p>
                                         </div>
                                     </div>
                                 </li>
+                                @endforeach
                             </ul>
                         </div>                      
                     </div>
@@ -146,19 +126,19 @@
                             <ul>
                                 <li class="list-group-item d-flex">
                                     <span>Subtotal</span>
-                                    <span class="ms-auto">$128.00</span>
+                                    <span class="ms-auto">${{ number_format($order->subtotal,2)}}</span>
                                 </li>
                                 <li class="list-group-item d-flex">
-                                    <span>Tax</span>
-                                    <span class="ms-auto">$0.00</span>
+                                    <span>Discount {{ (!empty($order->coupon_code)) ? '('.$order->coupon_code.')' : '' }}</span>
+                                    <span class="ms-auto">${{ number_format($order->discount,2)}}</span>
                                 </li>
                                 <li class="list-group-item d-flex">
                                     <span>Shipping</span>
-                                    <span class="ms-auto">$8.00</span>
+                                    <span class="ms-auto">${{ number_format($order->shipping,2)}}</span>
                                 </li>
                                 <li class="list-group-item d-flex fs-lg fw-bold">
                                     <span>Total</span>
-                                    <span class="ms-auto">$136.00</span>
+                                    <span class="ms-auto">${{ number_format($order->grand_total,2)}}</span>
                                 </li>
                             </ul>
                         </div>

@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\OrderItem;
 use App\Models\User;
 use Auth;
 use Hash;
 use Illuminate\Http\Request;
+use Illuminate\Testing\Constraints\SeeInOrder;
 use Validator;
 
 class AuthController extends Controller
@@ -102,7 +104,10 @@ class AuthController extends Controller
         $data = [];
         $user = Auth::user();
         $order = Order::where('user_id', $user->id)->where('id', $id)->first();
+        $orderItems = OrderItem::where('order_id', $id)->get();
+        $data['orderItems'] = $orderItems;
         $data['order'] = $order;
+        
         return view('front.account.order-detail',$data);
     }
 }

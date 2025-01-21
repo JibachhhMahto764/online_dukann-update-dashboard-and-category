@@ -296,7 +296,7 @@ if ($productAlreadyExist == false){
          $order->discount = $discount;
          $order->coupon_code = $promoCode;
          $order->coupon_code_id = $discountCodeId;
-         $order->payment_status = 'not paid';
+         $order->payment_status = 'not_paid';
          $order->status = 'pending';
          $order->user_id = $user->id;
          $order->first_name = $request->first_name;
