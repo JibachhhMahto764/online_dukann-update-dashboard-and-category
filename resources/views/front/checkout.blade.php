@@ -394,10 +394,9 @@ use Gloudemans\Shoppingcart\Facades\Cart;
                    $("#ShippingAmount").html('$'+response.shippingCharge);
                    $("#grandTotal").html('$'+response.grandTotal);
                    $("#discount_value").html('$'+response.discount);
-                   $("#discount_code_wrapper").html(response.discountString);
-                   
-                     
-                   
+                   $("#discount_code_wrapper").html(response.discountString); 
+               }else{
+                    $("#discount_code_wrapper").html("<span class='text-danger'>"+response.message+"</span>");
                }
             }
         });

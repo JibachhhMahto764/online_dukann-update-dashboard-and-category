@@ -65,7 +65,7 @@ class DiscountCodeController extends Controller
             $discountCode->code = $request->code;
             $discountCode->name = $request->name;
             $discountCode->description = $request->description;
-            $discountCode->max_users = $request->max_users;
+            $discountCode->max_uses = $request->max_uses;
             $discountCode->max_uses_user = $request->max_uses_user;
             $discountCode->type = $request->type;
             $discountCode->discount_amount = $request->discount_amount;
@@ -137,7 +137,7 @@ class DiscountCodeController extends Controller
             $discountCode->code = $request->code;
             $discountCode->name = $request->name;
             $discountCode->description = $request->description;
-            $discountCode->max_users = $request->max_users;
+            $discountCode->max_uses = $request->max_uses;
             $discountCode->max_uses_user = $request->max_uses_user;
             $discountCode->type = $request->type;
             $discountCode->discount_amount = $request->discount_amount;

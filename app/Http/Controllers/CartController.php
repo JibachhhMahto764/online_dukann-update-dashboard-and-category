@@ -248,7 +248,7 @@ if ($productAlreadyExist == false){
        // step -3 store data in orders table
 
        if ($request->payment_method == 'cod'){
-        
+         $discountCodeId = 0;
          $promoCode = '';
          
          $shipping = 0;
@@ -264,7 +264,7 @@ if ($productAlreadyExist == false){
                      $discount = $code->discount_amount;   
 
               }
-           
+            $discountCodeId = $code->id;
             $promoCode = $code->code;
            
          }     
@@ -295,7 +295,7 @@ if ($productAlreadyExist == false){
          $order->grand_total = $grandTotal;
          $order->discount = $discount;
          $order->coupon_code = $promoCode;
-        
+         $order->coupon_code_id = $discountCodeId;
          $order->user_id = $user->id;
          $order->first_name = $request->first_name;
          $order->last_name = $request->last_name;
@@ -381,7 +381,7 @@ if ($productAlreadyExist == false){
             return response()->json([
                'status' => true, 
                'grandTotal' => number_format($grandTotal,2),
-               'discount' => $discount,
+               'discount' => number_format($discount,2),
                'discountString' => $discountString,
                'shippingCharge' => number_format($shippingCharge,2),
               
@@ -396,7 +396,7 @@ if ($productAlreadyExist == false){
             return response()->json([
                'status' => true, 
                'grandTotal' => number_format($grandTotal,2),
-               'discount' => $discount,
+               'discount' => number_format($discount,2),
                'discountString' => $discountString,
                'shippingCharge' => number_format($shippingCharge,2),
                
@@ -409,7 +409,7 @@ if ($productAlreadyExist == false){
         return response()->json([
            'status' => true,
            'grandTotal' => number_format(($subTotal-$discount),2),
-           'discount' => $discount,
+           'discount' => number_format($discount,2), 
              'discountString' => $discountString,
            'shippingCharge' => number_format(0,2),
           
@@ -449,9 +449,48 @@ if ($productAlreadyExist == false){
             ]);
          }
       } 
+      // check if the coupon code is used or not
+        if ($code->max_uses > 0){
+         $couponUsed = Order::where('coupon_code_id', $code->id)->count();
+
+         if ($couponUsed >= $code->max_uses) {
+            return response()->json([
+               'status' => false,
+               'message' => 'Coupon code is already used.',
+            ]);
+         }
+       
+        }
+         // max_uses_user check here
+
+         if ($code->max_uses_user > 0){
+       $couponUsedByUser = Order::where(['coupon_code_id'=> $code->id, 'user_id' => Auth::user()->id])->count();
+
+       if ($couponUsedByUser >= $code->max_uses_user) {
+          return response()->json([
+             'status' => false,
+             'message' => ' You already used this Coupon code.',
+          ]);
+       }
+      } 
+        $subTotal = Cart::subtotal(2,'.','');
+        //Min amount condition check here
+
+        if ($code->min_amount > 0){
+         if ($subTotal < $code->min_amount){
+            return response()->json([
+               'status' => false,
+               'message' => 'Your Minimum amount required to use this coupon code is '.$code->min_amount,
+            ]);
+         }
+         
+        }
+      
+      
       session()->put('code',$code);
        return $this->getOrderSummery($request);
-   }
+   
+}
    public function removeDiscount(Request $request){
       session()->forget('code');
       return $this->getOrderSummery($request);

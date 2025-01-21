@@ -40,8 +40,8 @@
 									</div>	
                                     <div class="col-md-6">
 										<div class="mb-3">
-											<label for="max_user">Max User</label>
-											<input value="{{ $coupon->max_user}}" type="number"  name="max_user" id="max_user" class="form-control" placeholder="Max_Users">	
+											<label for="max_user">Max Uses</label>
+											<input value="{{ $coupon->max_uses}}" type="number"  name="max_uses" id="max_uses" class="form-control" placeholder="Max_Uses">	
 											<p></p>
 										</div>
 									</div>
