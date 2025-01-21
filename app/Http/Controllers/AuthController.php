@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
 use App\Models\User;
 use Auth;
 use Hash;
@@ -89,5 +90,19 @@ class AuthController extends Controller
     public function logout(){
         Auth::logout();
         return redirect()->route('account.login')->with('success' ,'You successfully logged out!!!.');
+    }
+    public function orders(){
+          $data = [];
+           $user = Auth::user();
+           $orders = Order::where('user_id',$user->id)->orderBy('created_at','DESC')->get();
+           $data['orders'] = $orders;
+        return view('front.account.order',$data);
+    }
+    public function orderDetail($id){
+        $data = [];
+        $user = Auth::user();
+        $order = Order::where('user_id', $user->id)->where('id', $id)->first();
+        $data['order'] = $order;
+        return view('front.account.order-detail',$data);
     }
 }
