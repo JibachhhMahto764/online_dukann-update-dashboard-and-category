@@ -76,6 +76,8 @@ Route::group(['prefix' =>'account'],function(){
      
       Route::get('/profile',action: [AuthController::class,'profile'])->name('account.profile');
       Route::get('/my-orders',[AuthController::class,'orders'])->name('account.orders');
+      Route::get('/my-wishlists',[AuthController::class,'wishlist'])->name('account.wishlists');
+      Route::post('/remove-product-from-wishlist',[AuthController::class,'removeProductFromWishlist'])->name('account.removeProductFromWishlist');
       Route::get('/order-detail/{id}',[AuthController::class,'orderDetail'])->name('account.orderDetail');
       Route::get('/logout',action: [AuthController::class,'logout'])->name('account.logout');
 
