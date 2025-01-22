@@ -326,7 +326,7 @@ if ($productAlreadyExist == false){
         }
 
         // send Order Email
-        OrderEmail($order->id);
+        OrderEmail($order->id,'customer');
         
          session()->flash('success','You have successfully placed your order.');
          Cart::destroy();
