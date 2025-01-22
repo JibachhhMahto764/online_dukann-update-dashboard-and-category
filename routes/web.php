@@ -36,6 +36,9 @@ use Illuminate\Http\Request;
     return view('welcome');
 });
  */
+// Route::get('/test', function () {
+//   OrderEmail(50);
+// });
 // frontend route
 
 Route::get('/',[FrontController::class,'index'])->name('front.home');

@@ -324,6 +324,10 @@ if ($productAlreadyExist == false){
          $orderItem->total = $item->price*$item->qty;
          $orderItem->save();
         }
+
+        // send Order Email
+        OrderEmail($order->id);
+        
          session()->flash('success','You have successfully placed your order.');
          Cart::destroy();
          session()->forget('code');
