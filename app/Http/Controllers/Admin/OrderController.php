@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Models\OrderItem;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -22,9 +23,29 @@ class OrderController extends Controller
         return view('admin.orders.list',$data);
     }
     public function detail($orderId){
-        $order = Order::where('id',$orderId)->first();
+        $order = Order::select('orders.*','countries.name as countryName')
+          ->where('orders.id',$orderId)
+         ->leftJoin('countries','countries.id','orders.country_id')
+          ->first();
+
+        $orderItems = OrderItem::where('order_id',$orderId)->get();
         $data['order'] = $order;
+        $data['orderItems'] = $orderItems;
         return view('admin.orders.detail',$data);
 
+    }
+    public function changeOrderStatus(Request $request, $orderId){
+        $order = Order::find($orderId);
+        $order->status = $request->status;
+        $order->shipped_date = $request->shipped_date;
+        $order->save();
+
+       $message = 'Order status updated successfully';
+        session()->flash('success',$message);
+        return response()->json([
+            'status' => true,
+            'message' => $message
+        ]);
+        
     }
 }
