@@ -39,6 +39,7 @@ use Illuminate\Http\Request;
 // Route::get('/test', function () {
 //   OrderEmail(50);
 // });
+
 // frontend route
 
 Route::get('/',[FrontController::class,'index'])->name('front.home');
@@ -55,6 +56,8 @@ Route::post('get-order-summery',[CartController::class,'getOrderSummery'])->name
 // appplyDiscount route
 Route::post('/apply-discount',[CartController::class,'applyDiscount'])->name('front.applyDiscount');
 Route::post('/remove-discount',[CartController::class,'removeDiscount'])->name('front.removeDiscount');
+// wishlist
+Route::post('/add-to-wishlist',[FrontController::class,'addToWishlist'])->name('front.addToWishlist');
 
 Route::group(['prefix' =>'account'],function(){
      Route::group(['middleware' =>'guest'],function(){

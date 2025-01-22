@@ -168,13 +168,32 @@
 			<div class="row">
 				<div class="col-12 mt-3">
 					<div class="copy-right text-center">
-						<p>© Copyright 2024 Amazing Online Dukann. All Rights Reserved</p>
+						<p>© Copyright 2025 Amazing Online Dukann. All Rights Reserved</p>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 </footer>
+
+<!-- WishlistModal -->
+<div class="modal fade" id="wishlistModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Success</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+       
+      </div>
+    </div>
+  </div>
+</div>
 
 <script src="{{ asset('front-assets/js/jquery-3.6.0.min.js')}}"></script>
 <script src="{{ asset('front-assets/js/bootstrap.bundle.5.1.3.min.js')}}"></script>
@@ -218,6 +237,26 @@ function myFunction() {
              }
          });
         }
+		function addToWishlist(id){
+			$.ajax({
+             url: '{{ route("front.addToWishlist")}}',
+             type:'post',
+             data:{id:id},
+             dataType: 'json',
+             success:function(response){
+                 if (response.status == true){
+					console.log(response.message);
+					$("#wishlistModal .modal-body").html(response.message);
+
+					$("#wishlistModal").modal('show');
+                    
+                 }else{
+					 window.location.href = "{{ route('account.login') }}";
+                    // alert(response.message);
+                 }
+             }
+         });
+		}
 </script>
      
 @yield('customJs')
