@@ -6,7 +6,7 @@
         <div class="container">
             <div class="light-font">
                 <ol class="breadcrumb primary-color mb-0">
-                    <li class="breadcrumb-item"><a class="white-text" href="#">Home</a></li>
+                    <li class="breadcrumb-item"><a class="white-text" href="{{route('front.home')}}">Home</a></li>
                     <li class="breadcrumb-item active">Shop</li>
                 </ol>
             </div>
@@ -206,6 +206,11 @@
 
                   
               // sorting filter 
+              var keyword = $("#search").val();
+              if (keyword.length > 0){
+                url += '&search='+keyword;
+              }
+              
                url += '&sort='+$("#sort").val()
             window.location.href = url;
          }   
