@@ -75,6 +75,8 @@ Route::group(['prefix' =>'account'],function(){
      Route::group(['middleware' =>'auth'],function(){
      
       Route::get('/profile',action: [AuthController::class,'profile'])->name('account.profile');
+      
+      Route::post('/update-profile',action: [AuthController::class,'updateProfile'])->name('account.updateProfile');
       Route::get('/my-orders',[AuthController::class,'orders'])->name('account.orders');
       Route::get('/my-wishlists',[AuthController::class,'wishlist'])->name('account.wishlists');
       Route::post('/remove-product-from-wishlist',[AuthController::class,'removeProductFromWishlist'])->name('account.removeProductFromWishlist');

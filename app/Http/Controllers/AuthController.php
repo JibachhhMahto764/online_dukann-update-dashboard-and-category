@@ -87,9 +87,12 @@ class AuthController extends Controller
     }
 
     public function profile(){
-       return view('front.account.profile');
+        $user = User::where('id',Auth::user()->id)->first();
+       return view('front.account.profile',['user' => $user]);
     }
-
+   public function updateProfile(Request $request){
+    echo "hello";
+   }
     public function logout(){
         Auth::logout();
         return redirect()->route('account.login')->with('success' ,'You successfully logged out!!!.');
