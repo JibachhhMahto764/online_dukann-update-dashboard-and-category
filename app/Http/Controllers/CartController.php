@@ -323,6 +323,15 @@ if ($productAlreadyExist == false){
          $orderItem->price = $item->price;
          $orderItem->total = $item->price*$item->qty;
          $orderItem->save();
+
+         // update Product Stock
+         $productData = Product::find($item->id);
+         if ($productData->track_qty == 'Yes'){
+            $currentQty = $productData->qty;
+            $updateQty = $currentQty-$item->qty;
+            $productData->qty = $updateQty;
+            $productData->save();
+         }
         }
 
         // send Order Email
