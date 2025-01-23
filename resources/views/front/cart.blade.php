@@ -33,7 +33,7 @@
                     </div>
                    </div>
                 @endif
-
+                                
                 @if(Cart::count() > 0)
                 <div class="col-md-8">
                     <div class="table-responsive">
