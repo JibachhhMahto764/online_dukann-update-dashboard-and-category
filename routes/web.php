@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\ProductSubCategoryController;
 use App\Http\Controllers\Admin\ShippingController;
 use App\Http\Controllers\Admin\SubCategoryController;
 use App\Http\Controllers\Admin\TempImagesController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\FrontController;
@@ -167,7 +168,10 @@ Route::group(['prefix' => 'admin'],function(){
       Route::get('/orders/{id}',[OrderController::class,'detail'])->name('orders.detail');
       Route::post('/order/change-status/{id}',[OrderController::class,'changeOrderStatus'])->name('orders.changeStatus');
       Route::post('order/send-email/{id}',[OrderController::class,'sendInvoiceEmail'])->name('orders.sendInvoiceEmail');
-
+     // Users Routes
+     Route::get('/users',[UserController::class,'index'])->name('users.index');
+     Route::get('/users/create',[UserController::class,'create'])->name('users.create');
+     Route::post('/users',[UserController::class,'store'])->name('users.store');
 
      //temp-image-create route
      Route::post('/upload-temp-image',[TempImagesController::class,'create'])->name('temp-images.create');
