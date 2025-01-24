@@ -68,8 +68,6 @@ Route::group(['prefix' =>'account'],function(){
     // frontend Authentication
       Route::get('/login',action: [AuthController::class,'login'])->name('account.login');
       Route::post('/login',action: [AuthController::class,'authenticate'])->name('account.authenticate');
-      
-
       Route::get('/register',[AuthController::class,'register'])->name('account.register');
       Route::post('/process-register',[AuthController::class,'processRegister'])->name('account.processRegister');
       Route::get('/logout',action: [AuthController::class,'logout'])->name('account.logout');
@@ -79,15 +77,20 @@ Route::group(['prefix' =>'account'],function(){
      Route::group(['middleware' =>'auth'],function(){
      
       Route::get('/profile',action: [AuthController::class,'profile'])->name('account.profile');
-      
       Route::post('/update-profile',action: [AuthController::class,'updateProfile'])->name('account.updateProfile');
       Route::post('/update-address',action: [AuthController::class,'updateAddress'])->name('account.updateAddress');
+      Route::get('/change-password',action: [AuthController::class,'showChangePasswordForm'])->name('account.changePassword');
+      Route::post('/process-change-password',action: [AuthController::class,'changePassword'])->name('account.processChangePassword');
+
+
+
       Route::get('/my-orders',[AuthController::class,'orders'])->name('account.orders');
       Route::get('/my-wishlists',[AuthController::class,'wishlist'])->name('account.wishlists');
       Route::post('/remove-product-from-wishlist',[AuthController::class,'removeProductFromWishlist'])->name('account.removeProductFromWishlist');
       Route::get('/order-detail/{id}',[AuthController::class,'orderDetail'])->name('account.orderDetail');
       Route::get('/logout',action: [AuthController::class,'logout'])->name('account.logout');
-
+      
+      
      });
 
 });
