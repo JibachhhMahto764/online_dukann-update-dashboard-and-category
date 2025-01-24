@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProductImageController;
 use App\Http\Controllers\Admin\ProductSubCategoryController;
+use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\ShippingController;
 use App\Http\Controllers\Admin\SubCategoryController;
 use App\Http\Controllers\Admin\TempImagesController;
@@ -60,6 +61,8 @@ Route::post('/apply-discount',[CartController::class,'applyDiscount'])->name('fr
 Route::post('/remove-discount',[CartController::class,'removeDiscount'])->name('front.removeDiscount');
 // wishlist
 Route::post('/add-to-wishlist',[FrontController::class,'addToWishlist'])->name('front.addToWishlist');
+//contact us route
+Route::post('/send-contact-email',[FrontController::class,'sendContactEmail'])->name('front.sendContactEmail');
 // page route
 Route::get('/page/{slug}',[FrontController::class,'page'])->name('front.page');
 
@@ -193,6 +196,10 @@ Route::group(['prefix' => 'admin'],function(){
 
      //temp-image-create route
      Route::post('/upload-temp-image',[TempImagesController::class,'create'])->name('temp-images.create');
+    // Setting Route
+    Route::get('/change-password',[SettingController::class,'showChangePasswordForm'])->name('admin.showChangePasswordForm');
+    Route::post('/process-change-password',[SettingController::class,'processChangePassword'])->name('admin.processChangePassword');
+
 
 
     Route::get('/getSlug',function(Request $request){
