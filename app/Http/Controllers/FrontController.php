@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Page;
 use App\Models\Product;
 use App\Models\Wishlist;
 use Auth;
@@ -61,5 +62,10 @@ class FrontController extends Controller
           'status' =>true,
           'message' => '<div class="alert alert-success"><strong>"'.$product->title.'"</strong> added in your wishlist.</div>'
         ]);
+      }
+
+      public function page($slug){
+        $page = Page::where('slug',$slug)->first();
+        dd($page);
       }
 }
