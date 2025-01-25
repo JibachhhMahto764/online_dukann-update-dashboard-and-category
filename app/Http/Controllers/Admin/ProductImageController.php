@@ -6,7 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\ProductImage;
 use File;
 use Illuminate\Http\Request;
-use Intervention\Image\Facades\Image;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class ProductImageController extends Controller
 {
@@ -29,19 +30,20 @@ class ProductImageController extends Controller
                 // large image 
                 
                 $destPath = public_path().'/uploads/product/large/'.$imageName;
-                $image = Image::make($sourcePath);
-                $image->resize(1400,null,function($constraint){
-                  $constraint->aspectRatio();
-
-                });
-                $image->save($destPath);
+                $manager = new ImageManager(new Driver());
+                      $image = $manager->read($sourcePath);
+                      $image->scaleDown(1400);
+                      $image->save($destPath);
+                
 
               // small image
              
                 $destPath = public_path().'/uploads/product/small/'.$imageName;
-                $image = Image::make($sourcePath);
-                $image->fit(300,300);
-                $image->save($destPath);
+                $manager = new ImageManager(new Driver());
+                    $image = $manager->read($sourcePath);
+                    $image->cover(300,300);
+                    $image->save($destPath);
+                
 
                  // response display
             $request->session()->flash('success', 'Image saved Successfully');

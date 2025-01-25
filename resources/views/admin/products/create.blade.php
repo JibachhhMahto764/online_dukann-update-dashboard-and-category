@@ -328,7 +328,7 @@
                    });
 
                    //dropzone use for drag and drop the imgaes
-                Dropzone.autoDiscover = false;    
+         Dropzone.autoDiscover = false;    
 		const dropzone = $("#image").dropzone({ 
 			url:  "{{ route('temp-images.create') }}",
 			maxFiles: 10,

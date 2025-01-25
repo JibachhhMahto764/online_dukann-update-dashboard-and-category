@@ -13,7 +13,8 @@ use App\Models\TempImage;
 use File;
 use Illuminate\Http\Request;
 use Validator;
-use Intervention\Image\Facades\Image;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 class ProductController extends Controller
 {
       public function index(Request $request){
@@ -95,19 +96,18 @@ class ProductController extends Controller
                 // large image 
                   $sourcePath = public_path().'/temp/'.$tempImageInfo->name;
                   $destPath = public_path().'/uploads/product/large/'.$imageName;
-                  $image = Image::make($sourcePath);
-                  $image->resize(1400,null,function($constraint){
-                    $constraint->aspectRatio();
-
-                  });
-                  $image->save($destPath);
+                 $manager = new ImageManager(new Driver());
+                    $image = $manager->read($sourcePath);
+                    $image->scaleDown(1400);
+                    $image->save($destPath);
 
                 // small image
                
                   $destPath = public_path().'/uploads/product/small/'.$imageName;
-                  $image = Image::make($sourcePath);
-                  $image->fit(300,300);
-                  $image->save($destPath);
+                $manager = new ImageManager(new Driver());
+                    $image = $manager->read($sourcePath);
+                    $image->cover(300,300);
+                    $image->save($destPath);
 
                 }
             }

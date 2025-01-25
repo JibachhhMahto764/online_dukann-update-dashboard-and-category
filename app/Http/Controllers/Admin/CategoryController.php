@@ -8,7 +8,8 @@ use App\Models\TempImage;
 use Illuminate\Http\Request;
 use Validator;
 use App\Models\Category;
-use Intervention\Image\Facades\Image;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class CategoryController extends Controller
 {
@@ -50,14 +51,12 @@ class CategoryController extends Controller
         File::copy($sPath,$dPath);
 
         // generate image thumbnail
+       
         $dPath = public_path().'/uploads/category/thumb/'.$newImageName;
-        $img = Image::make($sPath);
-         // resize image to fixed size
-          // $img->resize(450, 600);
-          $img ->fit(450,600,function($constraint){
-            $constraint->upsize();
-          });
-               $img->save($dPath);
+        $manager = new ImageManager(new Driver());
+        $image = $manager->read($sPath );
+        $image->cover(450,600);
+        $image->save($dPath);
         $category->image = $newImageName;
         $category->save();
       }
@@ -125,13 +124,11 @@ class CategoryController extends Controller
   
           // generate image thumbnail
           $dPath = public_path().'/uploads/category/thumb/'.$newImageName;
-          $img = Image::make($sPath);
-           // resize image to fixed size
-            // $img->resize(450, 600);
-            $img ->fit(450,600,function($constraint){
-              $constraint->upsize();
-            });
-          $img->save($dPath);
+         
+          $manager = new ImageManager(new Driver());
+            $image = $manager->read($sPath );
+            $image->cover(450,600);
+            $image->save($dPath);
           $category->image = $newImageName;
           $category->save();
           // Delete old Image Here 

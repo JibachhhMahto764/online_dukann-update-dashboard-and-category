@@ -22,7 +22,7 @@
 					<div class="container-fluid">
 					@include('admin.message')
 						<div class="card">
-						<form action="" method="get">
+						<form action="" method="post">
                         <div class="card-header">
                             <div class="card-title">
                                 <button type ="button" onclick="window.location.href='{{route('products.index')}}'"
