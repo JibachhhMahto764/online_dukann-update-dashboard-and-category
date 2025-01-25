@@ -70,7 +70,8 @@ Route::get('/forgot-password', [AuthController::class,'forgotPassword'])->name('
 Route::post('/process-forgot-password', [AuthController::class,'processForgotPassword'])->name('front.processForgotPassword');
 Route::get('/reset-password/{token}', [AuthController::class,'resetPassword'])->name('front.resetPassword');
 Route::post('/process-reset-password', [AuthController::class,'processResetPassword'])->name('front.processResetPassword');
-
+// rating route
+Route::post('/save-rating/{productId}', [ShopController::class,'saveRating'])->name('front.saveRating');
 
 
 // frontend Authentication
